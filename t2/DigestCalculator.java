@@ -60,7 +60,7 @@ public class DigestCalculator
 		{
 			if( !inputFile.isFile( ) ) 
 			{
-				System.err.println( "Arquivo " + inputFile.getName() + " não foi encontrado." );
+				System.err.println( "Arquivo " + inputFile.getName() + " nao foi encontrado." );
 				System.exit(1);
 			}
 			try
@@ -87,11 +87,11 @@ public class DigestCalculator
 			}
 			catch ( IOException e )
 			{
-				System.err.println( "Arquivo " + inputFile.getName() + " não pode ser lido." );
+				System.err.println( "Arquivo " + inputFile.getName() + " nao pode ser lido." );
 			}
 			catch (java.security.NoSuchAlgorithmException e )
 			{
-				System.err.println( "Tipo_Digest " + tipo + " não é reconhecido." );
+				System.err.println( "Tipo_Digest " + tipo + " nao eh reconhecido." );
 			}
 			System.exit(1);
 			return null;
@@ -124,7 +124,7 @@ public class DigestCalculator
 		}
 		catch ( IOException e )
 		{
-			System.err.println( "Arquivo " + inputFile.getName() + " não pode ser lido." );
+			System.err.println( "Arquivo " + inputFile.getName() + " nao pode ser lido." );
 		}
 		System.exit(1);
 		return null;
@@ -134,7 +134,7 @@ public class DigestCalculator
 	{
 		HashMap< String, String > digestMap = getDigestMap( null, new File( listFile ) );
 		
-		/* Se arquivo já existente, escreve na mesma linha */
+		/* Se arquivo ja existente, escreve na mesma linha */
 		
 		if ( digestMap.containsKey( new File( inputFile ).getName() ) )
 		{
@@ -163,7 +163,7 @@ public class DigestCalculator
 			}
 			catch ( IOException e )
 			{
-				System.err.println( "Arquivo " + listFile + " não pode ser escrito." );
+				System.err.println( "Arquivo " + listFile + " nao pode ser escrito." );
 				System.exit(1);
 			}
 		}
@@ -180,7 +180,7 @@ public class DigestCalculator
 			}
 			catch ( IOException e )
 			{
-				System.err.println( "Arquivo " + listFile + " não pode ser escrito." );
+				System.err.println( "Arquivo " + listFile + " nao pode ser escrito." );
 				System.exit(1);
 			}
 		}
