@@ -1,0 +1,68 @@
+import java.security.*;
+import javax.crypto.*;
+//
+// Generate a Message Digest
+public class MySignatureT1 {
+
+	private static String convertByteToStringHex(byte[] data) {
+		// converte o digist para hexadecimal
+		StringBuffer buf = new StringBuffer();
+		for(int i = 0; i < data.length; i++) {
+			String hex = Integer.toHexString(0x0100 + (data[i] & 0x00FF)).substring(1);
+			buf.append((hex.length() < 2 ? "0" : "") + hex);
+		}
+		return buf.toString();
+	}
+
+	private static KeyPair genKeyPair() throws NoSuchAlgorithmException {
+		// gera um par de chaves RSA
+		System.out.println( "Start generating RSA key" );
+		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+		keyGen.initialize(1024);
+		KeyPair key = keyGen.generateKeyPair();
+		System.out.println( "Finish generating RSA key" + "\n" );
+		return key;
+	}
+
+	public static void main (String[] args) throws Exception {
+		//
+		// check args and get plaintext
+		if (args.length !=1) {
+			System.err.println("Usage: java MySignatureT1 text");
+			System.exit(1);
+		}
+		byte[] plainText = args[0].getBytes("UTF8");
+
+		// get a message digest object using the MD5 algorithm
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+		// define o objeto de cifra RSA e imprime o provider utilizado   
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+
+		// print out the provider used
+		System.out.println( cipher.getProvider().getInfo() );
+		System.out.println( messageDigest.getProvider().getInfo() + "\n" );
+
+		// generate RSA key
+		KeyPair key = genKeyPair();
+
+		// calculate the digest and print it out
+		messageDigest.update( plainText);
+		byte [] digest = messageDigest.digest();
+		System.out.println( "Digest length: " + digest.length * 8 + "bits" );
+		System.out.println( "Digest(hex): " + convertByteToStringHex(digest) + "\n" );
+
+		// encripta o digest utilizando a chave privada
+		System.out.println( "Start encryption of digest using private key" );
+		cipher.init(Cipher.ENCRYPT_MODE, key.getPrivate());
+		byte[] signature = cipher.doFinal(digest);
+		System.out.println( "Finish encryption of digest - signature (hex output): " + convertByteToStringHex(signature) + "\n" );
+
+		// desencripta o texto cifrado utilizando a chave privada
+		System.out.println( "Start decryption of signature using public key" );
+		cipher.init(Cipher.DECRYPT_MODE, key.getPublic());
+		byte[] digestFromSig = cipher.doFinal(signature);
+		System.out.println( "Finish decryption (digest recovered): " + convertByteToStringHex(digestFromSig) + "\n" );
+
+	}
+}
