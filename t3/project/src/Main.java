@@ -1,11 +1,8 @@
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import javax.crypto.KeyGenerator;
@@ -56,6 +53,10 @@ public class Main
 	
 	public static void main(String[] args) throws Exception
 	{
-		test_crypt();
+		PrivateKey privateKey = Security.private_key_from_file(args[0], "segredo");
+		PublicKey publicKey = Security.public_key_from_file(args[1]);
+		boolean flag = Security.check_key_pair(privateKey, publicKey);
+		
+		System.out.println(flag ? "True" : "False");
 	}
 }

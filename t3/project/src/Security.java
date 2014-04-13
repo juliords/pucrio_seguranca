@@ -2,8 +2,12 @@ import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -65,8 +69,35 @@ public class Security
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(plain);
 		
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		PrivateKey private_key = keyFactory.generatePrivate(keySpec);
+		return keyFactory.generatePrivate(keySpec);
+	}
+	
+	public static PublicKey public_key_from_file(String filename) throws Exception
+	{
+		byte[] raw = Common.read_file(filename);
 		
-		return private_key;
+		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(raw);
+		
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		return keyFactory.generatePublic(keySpec);
+	}
+	
+	public static boolean check_key_pair(PrivateKey priv, PublicKey pub) throws Exception
+	{
+		byte[] raw = new byte[512];
+		(new Random()).nextBytes(raw);
+		
+		Signature sig = Signature.getInstance("MD5WithRSA");
+	    sig.initSign(priv);
+	    sig.update(raw);
+	    byte[] signature = sig.sign();
+
+	    sig.initVerify(pub);
+	    sig.update(raw);
+	    
+	    if (sig.verify(signature)) 
+	    	return true;
+	    else
+	    	return false;
 	}
 }

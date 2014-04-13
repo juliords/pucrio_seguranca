@@ -2,7 +2,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-
 public class Common 
 {
 	public static String binToHex(byte[] bin)
