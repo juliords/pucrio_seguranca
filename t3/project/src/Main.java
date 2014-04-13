@@ -54,14 +54,14 @@ public class Main
 	
 	public static void main(String[] args) throws Exception
 	{
-		String privKeyFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/userpriv";
-		String pubKeyFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/userpub";
+		String privKeyFile = "../sample/userpriv";
+		String pubKeyFile = "../sample/userpub";
 		PrivateKey privateKey = Security.private_key_from_file(privKeyFile, "segredo".getBytes("UTF8"));
 		PublicKey publicKey = Security.public_key_from_file(pubKeyFile);
 		
 		System.out.println("Key check: "+(Security.check_key_pair(privateKey, publicKey) ? "True" : "False"));
 		
-		String indexFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/index";
+		String indexFile = "../sample/index";
 		byte[] index_key = Security.rsa_decrypt_file(privateKey, indexFile+".env");
 		
 		byte[] index_plain = Security.symmetric_decryption(Common.read_file(indexFile+".enc"), index_key);
