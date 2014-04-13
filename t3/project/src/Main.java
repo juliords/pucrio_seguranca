@@ -3,6 +3,7 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import javax.crypto.KeyGenerator;
@@ -15,10 +16,10 @@ public class Main
 		String test = "qwe123";
 		System.out.println("Original: "+test);
 		
-		byte[] cipher = Security.symmetric_encryption(test.getBytes("UTF8"), "segredo");
+		byte[] cipher = Security.symmetric_encryption(test.getBytes("UTF8"), "segredo".getBytes("UTF8"));
 		System.out.println("Cifra: "+Common.binToHex(cipher));
 		
-		byte[] original = Security.symmetric_decryption(cipher, "segredo");
+		byte[] original = Security.symmetric_decryption(cipher, "segredo".getBytes("UTF8"));
 		System.out.println("Recuperado: "+(new String(original, "UTF8")));
 	}
 	
@@ -44,7 +45,7 @@ public class Main
 	
 	private static void test_private_key(String filename) throws Exception
 	{
-		byte[] private_key_plain = Security.symmetric_decryption(Common.read_file(filename), "segredo");
+		byte[] private_key_plain = Security.symmetric_decryption(Common.read_file(filename), "segredo".getBytes("UTF8"));
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(private_key_plain);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		PrivateKey private_key = keyFactory.generatePrivate(keySpec); 
@@ -53,10 +54,21 @@ public class Main
 	
 	public static void main(String[] args) throws Exception
 	{
-		PrivateKey privateKey = Security.private_key_from_file(args[0], "segredo");
-		PublicKey publicKey = Security.public_key_from_file(args[1]);
-		boolean flag = Security.check_key_pair(privateKey, publicKey);
+		String privKeyFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/userpriv";
+		String pubKeyFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/userpub";
+		PrivateKey privateKey = Security.private_key_from_file(privKeyFile, "segredo".getBytes("UTF8"));
+		PublicKey publicKey = Security.public_key_from_file(pubKeyFile);
 		
-		System.out.println(flag ? "True" : "False");
+		System.out.println("Key check: "+(Security.check_key_pair(privateKey, publicKey) ? "True" : "False"));
+		
+		String indexFile = "/home/juliords/Desktop/bagunca/repos/seguranca/t3/sample/index";
+		byte[] index_key = Security.rsa_decrypt_file(privateKey, indexFile+".env");
+		
+		byte[] index_plain = Security.symmetric_decryption(Common.read_file(indexFile+".enc"), index_key);
+		System.out.println("=========== BEGIN OF FILE ================");
+		System.out.println(new String(index_plain, "UTF8"));
+		System.out.println("=============END OF FILE =================");
+	    System.out.println("Digest check: "+(Security.digest_check(publicKey, index_plain,Common.read_file(indexFile+".asd")) ? "True" : "False"));
+		
 	}
 }
