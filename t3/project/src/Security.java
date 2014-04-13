@@ -62,7 +62,7 @@ public class Security
 		return keyFactory.generatePublic(keySpec);
 	}
 
-	public static boolean digest_check(PublicKey pub, byte[] plain, byte[] sign) throws Exception
+	public static boolean signature_check(PublicKey pub, byte[] plain, byte[] sign) throws Exception
 	{
 		Signature sig = Signature.getInstance("MD5WithRSA");
 		
@@ -81,7 +81,7 @@ public class Security
 	    sig.initSign(priv);
 	    sig.update(raw);
 
-	    return digest_check(pub, raw, sig.sign());
+	    return signature_check(pub, raw, sig.sign());
 	}
 	
 	public static byte[] rsa_decrypt_file(Key key, String filename) throws Exception

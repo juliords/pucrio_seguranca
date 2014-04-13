@@ -11,47 +11,6 @@ import javax.crypto.KeyGenerator;
 
 public class Main 
 {
-	private static void test_crypt() throws Exception
-	{
-		String test = "qwe123";
-		System.out.println("Original: "+test);
-		
-		byte[] cipher = Security.symmetric_encryption(test.getBytes("UTF8"), "segredo".getBytes("UTF8"));
-		System.out.println("Cifra: "+Common.binToHex(cipher));
-		
-		byte[] original = Security.symmetric_decryption(cipher, "segredo".getBytes("UTF8"));
-		System.out.println("Recuperado: "+(new String(original, "UTF8")));
-	}
-	
-	private static void test_prng() throws Exception
-	{
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-		random.setSeed("password".getBytes("UTF8"));
-		
-		for(int i = 0; i < 5; i++)
-			System.out.println(random.nextInt() % 100);
-	}
-	
-	private static void test_key() throws Exception
-	{
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-		random.setSeed("password".getBytes("UTF8"));
-		
-	    KeyGenerator keyGen = KeyGenerator.getInstance("DES");
-		keyGen.init(56, random);
-	    Key key = keyGen.generateKey();
-	    System.out.println("Chave usada: "+key.getEncoded().toString());
-	}
-	
-	private static void test_private_key(String filename) throws Exception
-	{
-		byte[] private_key_plain = Security.symmetric_decryption(Common.read_file(filename), "segredo".getBytes("UTF8"));
-		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(private_key_plain);
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		PrivateKey private_key = keyFactory.generatePrivate(keySpec); 
-		System.out.println(Common.binToHex(private_key.getEncoded()));
-	}
-	
 	public static void main(String[] args) throws Exception
 	{
 		String privKeyFile = "../sample/userpriv";
@@ -68,7 +27,7 @@ public class Main
 		System.out.println("=========== BEGIN OF FILE ================");
 		System.out.println(new String(index_plain, "UTF8"));
 		System.out.println("=============END OF FILE =================");
-	    System.out.println("Digest check: "+(Security.digest_check(publicKey, index_plain,Common.read_file(indexFile+".asd")) ? "True" : "False"));
+	    System.out.println("Digest check: "+(Security.signature_check(publicKey, index_plain,Common.read_file(indexFile+".asd")) ? "True" : "False"));
 		
 	}
 }
