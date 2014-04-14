@@ -133,7 +133,8 @@ public class Main
 		} 
 		catch (UnsupportedEncodingException e) 
 		{
-			System.out.println("ERROR: arquivo a ser impresso não é UTF8!");
+			System.out.println("NOTICE: arquivo a ser impresso não é UTF8!");
+			System.out.println(Common.binToHex(indexPlain));
 		}
 		System.out.println("=============END OF FILE =================");
 		
