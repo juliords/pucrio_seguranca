@@ -15,6 +15,8 @@ import javax.crypto.NoSuchPaddingException;
 public class Main 
 {
 	public static void main(String[] args)
+			throws NoSuchAlgorithmException, NoSuchPaddingException
+
 	{
 		String privKeyPath = "../sample/userpriv";
 		String pubKeyPath = "../sample/userpub";
@@ -49,11 +51,6 @@ public class Main
 			System.out.println("ERROR: arquivo(s) de chave RSA inválido(s)!");
 			return;
 		} 
-		catch (NoSuchAlgorithmException | NoSuchPaddingException e) 
-		{
-			e.printStackTrace();
-			return;
-		} 
 
 		/* ---------------------------------------------------------------------- */
 		
@@ -66,10 +63,6 @@ public class Main
 		{
 			System.out.println("ERROR: chave pública e privada não são válidas!");
 			keyPairCheck = false;
-		} 
-		catch (NoSuchAlgorithmException e) 
-		{
-			e.printStackTrace();
 		} 
 		System.out.println("Key check: "+(keyPairCheck ? "True" : "False"));
 		
@@ -92,7 +85,7 @@ public class Main
 				System.out.println("NOTICE: arquivo a ser impresso não é UTF8!");
 				System.out.println(Common.binToHex(indexPlain));
 			}
-			System.out.println("=============END OF FILE =================");
+			System.out.println("============ END OF FILE =================");
 		}
 	}
 }

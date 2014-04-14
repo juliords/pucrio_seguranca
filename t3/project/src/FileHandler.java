@@ -25,12 +25,14 @@ public class FileHandler
         byte[] keyBytes = new byte[(int) f.length()];
         
         dis.readFully(keyBytes);
-        dis.close();
         
+        dis.close();
+        fis.close();
         return keyBytes;
 	}
 	
 	public static byte[] readCryptedFile(String filename, PrivateKey priv, PublicKey pub)
+			throws NoSuchAlgorithmException, NoSuchPaddingException
 	{
 		String filePath = filename;
 		byte[] fileRaw, fileEnvRaw, fileAsdRaw;
@@ -63,11 +65,6 @@ public class FileHandler
 			//System.out.println("ERROR: envelope digital inválido!");
 			return null;
 		}
-		catch (NoSuchAlgorithmException | NoSuchPaddingException e) 
-		{
-			e.printStackTrace();
-			return null;
-		} 
 
 		/* ---------------------------------------------------------------------- */
 		
@@ -86,11 +83,6 @@ public class FileHandler
 			//System.out.println("ERROR: arquivo criptografado corrompido!");
 			return null;
 		}
-		catch (NoSuchAlgorithmException | NoSuchPaddingException e) 
-		{
-			e.printStackTrace();
-			return null;
-		} 
 
 		/* ---------------------------------------------------------------------- */
 		
@@ -109,11 +101,6 @@ public class FileHandler
 			//System.out.println("ERROR: não foi possível verificar assinatura!");
 			return null;
 		}
-		catch (NoSuchAlgorithmException e) 
-		{
-			e.printStackTrace();
-			return null;
-		} 
 	    
 		if(!fileSignCheck)
 			return null;
