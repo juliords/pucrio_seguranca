@@ -1,6 +1,8 @@
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Common 
 {
@@ -14,7 +16,7 @@ public class Common
 		return buf.toString();
 	}
 
-	public static byte[] read_file(String filename) throws Exception
+	public static byte[] readFile(String filename) throws IOException
 	{
 		File f = new File(filename);
         
