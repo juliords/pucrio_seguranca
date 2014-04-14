@@ -21,15 +21,17 @@ public class Main
 		byte[] privKeyRaw, pubKeyRaw;
 		try 
 		{
-			privKeyRaw = Common.readFile(privKeyPath);
-			pubKeyRaw = Common.readFile(pubKeyPath);
+			privKeyRaw = FileHandler.readFile(privKeyPath);
+			pubKeyRaw = FileHandler.readFile(pubKeyPath);
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 			return;
 		}
-		
+
+		/* ---------------------------------------------------------------------- */
+
 		PrivateKey privateKey;
 		PublicKey publicKey;
 		try 
@@ -52,6 +54,8 @@ public class Main
 			e.printStackTrace();
 			return;
 		} 
+
+		/* ---------------------------------------------------------------------- */
 		
 		boolean keyPairCheck = false;
 		try 
@@ -65,98 +69,30 @@ public class Main
 		} 
 		catch (NoSuchAlgorithmException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		System.out.println("Key check: "+(keyPairCheck ? "True" : "False"));
 		
-		String indexPath = "../sample/index";
-		byte[] indexRaw, indexEnvRaw, indexAsdRaw;
-		try 
-		{
-			indexRaw = Common.readFile(indexPath+".env");
-			indexEnvRaw = Common.readFile(indexPath+".enc");
-			indexAsdRaw = Common.readFile(indexPath+".asd");
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-			return;
-		}
-
-		byte[] indexKeyPlain;
-		try 
-		{
-			indexKeyPlain = Security.asymmetricDecryption(indexRaw, privateKey);
-		} 
-		catch (InvalidKeyException e) 
-		{
-			System.out.println("ERROR: chave privada do envelope digital inválida!");
-			return;
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException e) 
-		{
-			System.out.println("ERROR: envelope digital inválido!");
-			return;
-		}
-		catch (NoSuchAlgorithmException | NoSuchPaddingException e) 
-		{
-			e.printStackTrace();
-			return;
-		} 
+		/* ---------------------------------------------------------------------- */
 		
-		byte[] indexPlain;
-		try 
+		byte[] indexPlain = FileHandler.readCryptedFile("../sample/XXXXYYYYZZZZ", privateKey, publicKey);
+		if(indexPlain == null)
 		{
-			indexPlain = Security.symmetricDecryption(indexEnvRaw, indexKeyPlain);
-		} 
-		catch (InvalidKeyException e) 
-		{
-			System.out.println("ERROR: chave do arquivo criptografado inválida!");
-			return;
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException e) 
-		{
-			System.out.println("ERROR: arquivo criptografado corrompido!");
-			return;
+			System.out.println("Erro ao decriptar arquivo!");
 		}
-		catch (NoSuchAlgorithmException | NoSuchPaddingException e) 
+		else
 		{
-			e.printStackTrace();
-			return;
-		} 
-
-		System.out.println("=========== BEGIN OF FILE ================");
-		try 
-		{
-			System.out.println(new String(indexPlain, "UTF8"));
-		} 
-		catch (UnsupportedEncodingException e) 
-		{
-			System.out.println("NOTICE: arquivo a ser impresso não é UTF8!");
-			System.out.println(Common.binToHex(indexPlain));
+			System.out.println("=========== BEGIN OF FILE ================");
+			try 
+			{
+				System.out.println(new String(indexPlain, "UTF8"));
+			} 
+			catch (UnsupportedEncodingException e) 
+			{
+				System.out.println("NOTICE: arquivo a ser impresso não é UTF8!");
+				System.out.println(Common.binToHex(indexPlain));
+			}
+			System.out.println("=============END OF FILE =================");
 		}
-		System.out.println("=============END OF FILE =================");
-		
-		boolean indexSignCheck = false;
-		try 
-		{
-			indexSignCheck = Security.checkSignature(publicKey, indexPlain, indexAsdRaw);
-		} 
-		catch (InvalidKeyException e) 
-		{
-			System.out.println("ERROR: chave pública da verificação da assinatura inválida!");
-		} 
-		catch (SignatureException e) 
-		{
-			System.out.println("ERROR: não foi possível verificar assinatura!");
-		}
-		catch (NoSuchAlgorithmException e) 
-		{
-			e.printStackTrace();
-			return;
-		} 
-	    System.out.println("Digest check: "+(indexSignCheck ? "True" : "False"));
-		
 	}
 }
