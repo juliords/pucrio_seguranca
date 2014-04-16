@@ -38,9 +38,9 @@ public class FileHandler
 		byte[] fileRaw, fileEnvRaw, fileAsdRaw;
 		try 
 		{
-			fileRaw = FileHandler.readFile(filePath+".enc");
-			fileEnvRaw = FileHandler.readFile(filePath+".env");
-			fileAsdRaw = FileHandler.readFile(filePath+".asd");
+			fileRaw = readFile(filePath+".enc");
+			fileEnvRaw = readFile(filePath+".env");
+			fileAsdRaw = readFile(filePath+".asd");
 		} 
 		catch (IOException e) 
 		{
@@ -57,12 +57,12 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave privada do envelope digital inválida!");
+			//System.out.println("ERROR: chave privada do envelope digital invalida!");
 			return null;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException e) 
 		{
-			//System.out.println("ERROR: envelope digital inválido!");
+			//System.out.println("ERROR: envelope digital invalido!");
 			return null;
 		}
 
@@ -75,7 +75,7 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave do arquivo criptografado inválida!");
+			//System.out.println("ERROR: chave do arquivo criptografado invalida!");
 			return null;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException e) 
@@ -93,12 +93,12 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave pública da verificação da assinatura inválida!");
+			//System.out.println("ERROR: chave publica da verificacao da assinatura invalida!");
 			return null;
 		} 
 		catch (SignatureException e) 
 		{
-			//System.out.println("ERROR: não foi possível verificar assinatura!");
+			//System.out.println("ERROR: nao foi possivel verificar assinatura!");
 			return null;
 		}
 	    
