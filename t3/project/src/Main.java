@@ -43,12 +43,12 @@ public class Main
 		} 
 		catch (InvalidKeyException | UnsupportedEncodingException e) 
 		{
-			System.out.println("ERROR: chave DES da private key inválida!");
+			System.out.println("ERROR: chave DES da private key invalida!");
 			return;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException e) 
 		{
-			System.out.println("ERROR: arquivo(s) de chave RSA inválido(s)!");
+			System.out.println("ERROR: arquivo(s) de chave RSA invalido(s)!");
 			return;
 		} 
 
@@ -61,7 +61,7 @@ public class Main
 		} 
 		catch (InvalidKeyException | SignatureException e) 
 		{
-			System.out.println("ERROR: chave pública e privada não são válidas!");
+			System.out.println("ERROR: chave publica e privada nao sao validas!");
 			keyPairCheck = false;
 		} 
 		System.out.println("Key check: "+(keyPairCheck ? "True" : "False"));
@@ -82,7 +82,7 @@ public class Main
 			} 
 			catch (UnsupportedEncodingException e) 
 			{
-				System.out.println("NOTICE: arquivo a ser impresso não é UTF8!");
+				System.out.println("NOTICE: arquivo a ser impresso nao eh UTF8!");
 				System.out.println(Common.binToHex(indexPlain));
 			}
 			System.out.println("============ END OF FILE =================");
