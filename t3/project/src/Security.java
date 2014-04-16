@@ -1,6 +1,7 @@
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -21,6 +22,27 @@ import javax.crypto.NoSuchPaddingException;
 
 public class Security 
 {	
+	private static byte[] digest(byte[] bin, String algorithm) throws NoSuchAlgorithmException
+	{
+
+		MessageDigest messageDigest;
+
+		messageDigest = MessageDigest.getInstance(algorithm);
+		messageDigest.update(bin);
+
+		return messageDigest.digest();
+	}
+
+	public static byte[] md5(byte[] bin) throws NoSuchAlgorithmException
+	{
+		return digest(bin, "MD5");
+	}
+
+	public static byte[] sha1(byte[] bin) throws NoSuchAlgorithmException
+	{
+		return digest(bin, "SHA1");
+	}
+	
 	private static byte[] symmetricProcess(int opmode, byte[] raw, byte[] passwd) 
 				throws 	NoSuchAlgorithmException, 
 						NoSuchPaddingException, 

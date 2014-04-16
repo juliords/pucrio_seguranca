@@ -6,11 +6,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -94,22 +89,5 @@ public class Main
 			}
 			System.out.println("============ END OF FILE =================");
 		}
-		
-		try {
-			Class.forName("org.postgresql.Driver");
-			Connection conn = DriverManager
-		            .getConnection("jdbc:postgresql://localhost:5432/seguranca",
-		                    "seguranca", "seguranca");
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from mensagem;");
-			while(rs.next())
-			{
-				System.out.println(rs.getInt(1)+" - "+rs.getString(2));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		 
 	}
 }

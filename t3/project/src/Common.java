@@ -1,3 +1,4 @@
+
 public class Common 
 {
 	public static String binToHex(byte[] bin)

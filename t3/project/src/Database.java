@@ -3,8 +3,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class Database {
-
+public class Database 
+{
 	public static Connection getConnection() 
 			throws ClassNotFoundException, SQLException
 	{

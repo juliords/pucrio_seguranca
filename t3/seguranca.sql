@@ -2,10 +2,6 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.3.4
--- Dumped by pg_dump version 9.3.4
--- Started on 2014-04-16 09:27:10 BRT
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'SQL_ASCII';
@@ -15,7 +11,6 @@ SET client_min_messages = warning;
 
 DROP DATABASE seguranca;
 --
--- TOC entry 1966 (class 1262 OID 16893)
 -- Name: seguranca; Type: DATABASE; Schema: -; Owner: -
 --
 
@@ -32,7 +27,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- TOC entry 5 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
@@ -40,8 +34,6 @@ CREATE SCHEMA public;
 
 
 --
--- TOC entry 1967 (class 0 OID 0)
--- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
 
@@ -49,7 +41,6 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- TOC entry 174 (class 3079 OID 11757)
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -57,8 +48,6 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 1968 (class 0 OID 0)
--- Dependencies: 174
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
 --
 
@@ -70,7 +59,6 @@ SET search_path = public, pg_catalog;
 SET default_with_oids = false;
 
 --
--- TOC entry 171 (class 1259 OID 16902)
 -- Name: grupo_usuario; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -81,7 +69,6 @@ CREATE TABLE grupo_usuario (
 
 
 --
--- TOC entry 172 (class 1259 OID 16917)
 -- Name: mensagem; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -92,7 +79,6 @@ CREATE TABLE mensagem (
 
 
 --
--- TOC entry 173 (class 1259 OID 16922)
 -- Name: registro; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -104,7 +90,6 @@ CREATE TABLE registro (
 
 
 --
--- TOC entry 170 (class 1259 OID 16894)
 -- Name: usuario; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -119,8 +104,6 @@ CREATE TABLE usuario (
 
 
 --
--- TOC entry 1959 (class 0 OID 16902)
--- Dependencies: 171
 -- Data for Name: grupo_usuario; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -129,8 +112,6 @@ INSERT INTO grupo_usuario (pk_codigo, nome) VALUES (1, 'Normal');
 
 
 --
--- TOC entry 1960 (class 0 OID 16917)
--- Dependencies: 172
 -- Data for Name: mensagem; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -182,23 +163,19 @@ INSERT INTO mensagem (pk_codigo, descricao) VALUES (9005, 'Arquivo decriptado <n
 
 
 --
--- TOC entry 1961 (class 0 OID 16922)
--- Dependencies: 173
 -- Data for Name: registro; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 
 
 --
--- TOC entry 1958 (class 0 OID 16894)
--- Dependencies: 170
 -- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO usuario (pk_login, fk_grupo, nome, senha_hash, senha_salt, chave_publica) VALUES ('admin', 0, 'Administrador', '8055bdf27581584a2839a5fab4d5dc066be84076', '540654971', '30819f300d06092a864886f70d010101050003818d00308189028181009ba4f73616ef24c80edb8b6853502498739e847cbcf749b89159b37cea47626df58d496a93c9f1590164b74d1216066f4b66fba2db1d789a51651cac11926921d123fd99653add1e90bb9fd8274fc6b72121f60e2498312aae69eaa1162bb5f2f7b0ac02b3b768d8fcd96bd83dc655dbb91677e39479178297d13c8bbfa84d350203010001');
 
 
 --
--- TOC entry 1843 (class 2606 OID 16906)
 -- Name: pk_grupo_usuario; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -207,7 +184,6 @@ ALTER TABLE ONLY grupo_usuario
 
 
 --
--- TOC entry 1845 (class 2606 OID 16921)
 -- Name: pk_mensagem; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -216,7 +192,6 @@ ALTER TABLE ONLY mensagem
 
 
 --
--- TOC entry 1847 (class 2606 OID 16937)
 -- Name: pk_registro; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -225,7 +200,6 @@ ALTER TABLE ONLY registro
 
 
 --
--- TOC entry 1841 (class 2606 OID 16901)
 -- Name: pk_usuarios; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -234,7 +208,6 @@ ALTER TABLE ONLY usuario
 
 
 --
--- TOC entry 1850 (class 2606 OID 16943)
 -- Name: fk_registro_mensagem; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -243,7 +216,6 @@ ALTER TABLE ONLY registro
 
 
 --
--- TOC entry 1849 (class 2606 OID 16938)
 -- Name: fk_registro_usuario; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -252,15 +224,12 @@ ALTER TABLE ONLY registro
 
 
 --
--- TOC entry 1848 (class 2606 OID 16912)
 -- Name: fk_usuario_grupo; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY usuario
     ADD CONSTRAINT fk_usuario_grupo FOREIGN KEY (fk_grupo) REFERENCES grupo_usuario(pk_codigo) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
--- Completed on 2014-04-16 09:27:10 BRT
 
 --
 -- PostgreSQL database dump complete
