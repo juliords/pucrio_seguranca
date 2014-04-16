@@ -41,6 +41,6 @@ public class Common
 	
 	public static String genPasswdHash(String plain, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
-		return Common.binToHex(Security.sha1((plain+salt).getBytes("UTF8")));
+		return Common.binToHex(Security.md5((plain+salt).getBytes("UTF8")));
 	}
 }
