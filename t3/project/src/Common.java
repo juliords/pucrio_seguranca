@@ -1,3 +1,7 @@
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+
 
 public class Common 
 {
@@ -23,5 +27,20 @@ public class Common
 	                             + Character.digit(s.charAt(i+1), 16));
 	    }
 	    return data;
+	}
+	
+	public static Integer randi(Integer min, Integer max)
+	{
+		return Math.abs((new Random()).nextInt()) % (max-min+1) + min;
+	}
+	
+	public static String genSalt()
+	{
+		return String.format("%09d", randi(0, 999999999));
+	}
+	
+	public static String genPasswdHash(String plain, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	{
+		return Common.binToHex(Security.sha1((plain+salt).getBytes("UTF8")));
 	}
 }

@@ -6,6 +6,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLException;
+import java.util.Random;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -17,7 +19,8 @@ public class Main
 	public static void main(String[] args)
 			throws 	ClassNotFoundException,
 					NoSuchAlgorithmException, 
-					NoSuchPaddingException
+					NoSuchPaddingException,
+					UnsupportedEncodingException
 
 	{
 		String privKeyPath = "../sample/userpriv";
@@ -43,7 +46,7 @@ public class Main
 			privateKey = Security.loadPrivateKey(privKeyRaw, "segredo".getBytes("UTF8"));
 			publicKey = Security.loadPublicKey(pubKeyRaw);
 		} 
-		catch (InvalidKeyException | UnsupportedEncodingException e) 
+		catch (InvalidKeyException e) 
 		{
 			System.out.println("ERROR: chave DES da private key invalida!");
 			return;
