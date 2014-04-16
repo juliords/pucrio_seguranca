@@ -35,7 +35,10 @@ public class Main
 			for(i = 0; i < 3; i++)
 			{
 				if(Auth.step2(user))
+				{
+					Auth.resetLoginTries(user.getLogin());
 					break;
+				}
 
 				System.out.println("Senha errada, tente novamente!");
 				Auth.increaseLoginTries(user.getLogin());
@@ -45,9 +48,26 @@ public class Main
 				System.out.println("Você errou a senha 3 vezes. Espere 2 minutos e tente novamente!");
 				continue;
 			}
-			System.out.println("Etapa 2 validada com sucesso!");
 			
-			break;
+			for(i = 0; i < 3; i++)
+			{
+				if(Auth.step3(user))
+				{
+					Auth.resetLoginTries(user.getLogin());
+					break;
+				}
+
+				System.out.println("Chave privada invalida, tente novamente!");
+				Auth.increaseLoginTries(user.getLogin());
+			}
+			if(i == 3)
+			{
+				System.out.println("Você entrou com 3 chaves privadas invalidas. Espere 2 minutos e tente novamente!");
+				continue;
+			}
+			
+			System.out.println("Etapa 3 validada com sucesso!");
+			break; // continuar
 		}
 		
 		testDecrypt();

@@ -1,10 +1,19 @@
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 
 public class Auth 
@@ -126,8 +135,58 @@ public class Auth
 			String hash = Common.genPasswdHash(passwd.toString(), user.getPasswdSalt());
 			if(hash.equals(user.getPasswdHash())) return true;
 		}
-
+		
 		return false;
 	}
 
+	public static boolean step3(User user) throws NoSuchAlgorithmException, NoSuchPaddingException
+	{
+		System.out.println("Por favor, entre com o caminho da sua chave privada:");
+		
+		byte[] privRaw;
+		try {
+			String path = Common.readStdinLine();
+			privRaw = FileHandler.readFile(path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Erro ao abrir arquivo!");
+			return false;
+		}
+		
+		System.out.print("Senha da chave privada: ");
+		String passwd;
+		try {
+			passwd = Common.readStdinLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		PrivateKey privateKey;
+		try 
+		{
+			privateKey = Security.loadPrivateKey(privRaw, passwd.getBytes("UTF8"));
+		} 
+		catch (InvalidKeyException | UnsupportedEncodingException e) 
+		{
+			System.out.println("ERROR: chave DES da private key invalida!");
+			return false;
+		} 
+		catch (IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException e) 
+		{
+			System.out.println("ERROR: arquivo de chave privada invalido!");
+			return false;
+		} 
+		
+		try 
+		{
+			return Security.checkKeyPair(privateKey, user.getPublicKey());
+		} 
+		catch (InvalidKeyException | SignatureException e) 
+		{
+			System.out.println("ERROR: chave publica e privada nao sao validas!");
+			return false;
+		} 
+	}
 }

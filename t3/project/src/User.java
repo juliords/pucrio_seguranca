@@ -1,4 +1,5 @@
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ public class User
 	private String passwdHash;
 	private String passwdSalt;
 	private PublicKey publicKey;
+	private PrivateKey privateKey;
 	private Integer loginTries;
 	private Date lastLoginTry;
 	
@@ -49,6 +51,7 @@ public class User
 			user.passwdSalt = rs.getString("senha_salt");
 			user.loginTries = rs.getInt("erro_qtd");
 			user.lastLoginTry = rs.getTimestamp("erro_hora");
+			user.privateKey = null;
 			
 			try {
 				user.publicKey = Security.loadPublicKey(Common.hexToBin(rs.getString("chave_publica")));
@@ -90,5 +93,13 @@ public class User
 	
 	public Date getLastLoginTry() {
 		return lastLoginTry;
+	}
+
+	public PrivateKey getPrivateKey() {
+		return privateKey;
+	}
+
+	public void setPrivateKey(PrivateKey privateKey) {
+		this.privateKey = privateKey;
 	}
 }
