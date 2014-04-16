@@ -1,5 +1,6 @@
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Random;
 
 
@@ -43,4 +44,10 @@ public class Common
 	{
 		return Common.binToHex(Security.md5((plain+salt).getBytes("UTF8")));
 	}
+	
+	public static Double diffDate(Date date1, Date date2)
+	{
+		return ((date1.getTime()-date2.getTime())/(1000*60.0));
+	}
+
 }

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 
 public class User 
@@ -15,6 +16,8 @@ public class User
 	private String passwdHash;
 	private String passwdSalt;
 	private PublicKey publicKey;
+	private Integer loginTries;
+	private Date lastLoginTry;
 	
 	private User()
 	{
@@ -27,7 +30,7 @@ public class User
 		Connection conn = Database.getConnection();
 		
 		
-		String sql = "SELECT pk_login, fk_grupo, nome, senha_hash, senha_salt, chave_publica "
+		String sql = "SELECT pk_login, fk_grupo, nome, senha_hash, senha_salt, chave_publica, erro_qtd, erro_hora "
 						+ "FROM usuario "
 						+ "WHERE pk_login = ?;";
 		PreparedStatement stm = conn.prepareStatement(sql);
@@ -44,6 +47,9 @@ public class User
 			user.name = rs.getString("nome");
 			user.passwdHash = rs.getString("senha_hash");
 			user.passwdSalt = rs.getString("senha_salt");
+			user.loginTries = rs.getInt("erro_qtd");
+			user.lastLoginTry = rs.getTimestamp("erro_hora");
+			
 			try {
 				user.publicKey = Security.loadPublicKey(Common.hexToBin(rs.getString("chave_publica")));
 			} catch (InvalidKeySpecException e) {
@@ -76,5 +82,13 @@ public class User
 
 	public PublicKey getPublicKey() {
 		return publicKey;
+	}
+
+	public Integer getLoginTries() {
+		return loginTries;
+	}
+
+	public Date getLastLoginTry() {
+		return lastLoginTry;
 	}
 }

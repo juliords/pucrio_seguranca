@@ -1,21 +1,40 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
-import java.util.Random;
+import java.util.Date;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 
 public class Main 
 {
+	private static User authStep1() throws ClassNotFoundException, NoSuchAlgorithmException 
+	{
+		System.out.print("Login: ");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String login;
+		try {
+			login = br.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		try 
+		{
+			return Auth.login(login);
+		} 
+		catch (SQLException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static void main(String[] args)
 			throws 	ClassNotFoundException,
 					NoSuchAlgorithmException, 
@@ -23,74 +42,15 @@ public class Main
 					UnsupportedEncodingException
 
 	{
-		String privKeyPath = "../sample/userpriv";
-		String pubKeyPath = "../sample/userpub";
-		byte[] privKeyRaw, pubKeyRaw;
-		try 
+		while(true)
 		{
-			privKeyRaw = FileHandler.readFile(privKeyPath);
-			pubKeyRaw = FileHandler.readFile(pubKeyPath);
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-			return;
-		}
-
-		/* ---------------------------------------------------------------------- */
-
-		PrivateKey privateKey;
-		PublicKey publicKey;
-		try 
-		{
-			privateKey = Security.loadPrivateKey(privKeyRaw, "segredo".getBytes("UTF8"));
-			publicKey = Security.loadPublicKey(pubKeyRaw);
-		} 
-		catch (InvalidKeyException e) 
-		{
-			System.out.println("ERROR: chave DES da private key invalida!");
-			return;
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException e) 
-		{
-			System.out.println("ERROR: arquivo(s) de chave RSA invalido(s)!");
-			return;
-		} 
-
-		/* ---------------------------------------------------------------------- */
-		
-		boolean keyPairCheck = false;
-		try 
-		{
-			keyPairCheck = Security.checkKeyPair(privateKey, publicKey);
-		} 
-		catch (InvalidKeyException | SignatureException e) 
-		{
-			System.out.println("ERROR: chave publica e privada nao sao validas!");
-			keyPairCheck = false;
-		} 
-		System.out.println("Key check: "+(keyPairCheck ? "True" : "False"));
-		
-		/* ---------------------------------------------------------------------- */
-		
-		byte[] indexPlain = FileHandler.readCryptedFile("../sample/XXXXYYYYZZZZ", privateKey, publicKey);
-		if(indexPlain == null)
-		{
-			System.out.println("Erro ao decriptar arquivo!");
-		}
-		else
-		{
-			System.out.println("=========== BEGIN OF FILE ================");
-			try 
+			User user = authStep1();
+			if(user == null)
 			{
-				System.out.println(new String(indexPlain, "UTF8"));
-			} 
-			catch (UnsupportedEncodingException e) 
-			{
-				System.out.println("NOTICE: arquivo a ser impresso nao eh UTF8!");
-				System.out.println(Common.binToHex(indexPlain));
+				System.out.println("Erro na autenticacao (etapa 1)");
+				continue;
 			}
-			System.out.println("============ END OF FILE =================");
+			System.out.println(user.getName());
 		}
 	}
 }
