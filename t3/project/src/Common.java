@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -50,4 +53,29 @@ public class Common
 		return ((date1.getTime()-date2.getTime())/(1000*60.0));
 	}
 
+	public static Integer[] randPermut(Integer len)
+	{
+		Integer[] v = new Integer[len];
+
+		for(int i = 0; i < len; i++)
+			v[i] = i;
+		
+		int cnt = 0;
+		while(cnt < len)
+		{
+			int j = randi(0, len-1);
+			int aux = v[cnt];
+			v[cnt] = v[j];
+			v[j] = aux;
+			cnt++;
+		}
+		
+		return v;
+	}
+	
+	public static String readStdinLine() throws IOException
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		return br.readLine();
+	}
 }

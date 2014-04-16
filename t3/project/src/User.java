@@ -87,7 +87,7 @@ public class User
 	public Integer getLoginTries() {
 		return loginTries;
 	}
-
+	
 	public Date getLastLoginTry() {
 		return lastLoginTry;
 	}
