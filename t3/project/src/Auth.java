@@ -3,7 +3,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
@@ -90,12 +89,13 @@ public class Auth
 	
 	public static boolean step2(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
-		Integer[][] keys = new Integer[6][];
-		Integer[] sel = new Integer[6];
-		for(int i = 0; i < 6; i++)
+		int passwdLen = 8;
+		Integer[][] keys = new Integer[passwdLen][];
+		Integer[] sel = new Integer[passwdLen];
+		for(int i = 0; i < passwdLen; i++)
 			keys[i] = Common.randPermut(10);
 
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < passwdLen; i++)
 		{
 			System.out.print("Teclado: ");
 			for(int j = 0; j < 5; j++)
@@ -120,10 +120,10 @@ public class Auth
 			sel[i] = key;
 		}
 		
-		for(int i = 0; i < 64; i++) // aaaaaaaall combinations
+		for(int i = 0; i < Math.pow(2, passwdLen); i++) // aaaaaaaall combinations
 		{
 			Integer passwd = 0;
-			for(int j = 0; j < 6; j++)
+			for(int j = 0; j < passwdLen; j++)
 			{
 				int t = i & (1 << j);
 				passwd *= 10;
@@ -179,6 +179,7 @@ public class Auth
 			return false;
 		} 
 		
+		user.setPrivateKey(privateKey);
 		try 
 		{
 			return Security.checkKeyPair(privateKey, user.getPublicKey());

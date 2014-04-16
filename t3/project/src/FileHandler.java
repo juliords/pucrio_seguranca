@@ -57,12 +57,12 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave privada do envelope digital invalida!");
+			System.out.println("ERROR: chave privada do envelope digital invalida!");
 			return null;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException e) 
 		{
-			//System.out.println("ERROR: envelope digital invalido!");
+			System.out.println("ERROR: envelope digital invalido!");
 			return null;
 		}
 
@@ -75,12 +75,12 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave do arquivo criptografado invalida!");
+			System.out.println("ERROR: chave do arquivo criptografado invalida!");
 			return null;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException e) 
 		{
-			//System.out.println("ERROR: arquivo criptografado corrompido!");
+			System.out.println("ERROR: arquivo criptografado corrompido!");
 			return null;
 		}
 
@@ -93,17 +93,20 @@ public class FileHandler
 		} 
 		catch (InvalidKeyException e) 
 		{
-			//System.out.println("ERROR: chave publica da verificacao da assinatura invalida!");
+			System.out.println("ERROR: chave publica da verificacao da assinatura invalida!");
 			return null;
 		} 
 		catch (SignatureException e) 
 		{
-			//System.out.println("ERROR: nao foi possivel verificar assinatura!");
+			System.out.println("ERROR: nao foi possivel verificar assinatura!");
 			return null;
 		}
 	    
 		if(!fileSignCheck)
+		{
+			System.out.println("Falha na verificação de integridade e autenticidade!");
 			return null;
+		}
 		
 		return filePlain;
 		

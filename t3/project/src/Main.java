@@ -1,14 +1,9 @@
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 
@@ -20,7 +15,28 @@ public class Main
 					NoSuchPaddingException,
 					UnsupportedEncodingException
 
-	{
+	{		
+		/*
+		String pubPath = "../Keys/user03pub";
+		byte[] pubRaw;
+		try {
+			pubRaw = FileHandler.readFile(pubPath);
+			Security.loadPublicKey(pubRaw);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		System.out.println(Common.binToHex(pubRaw));
+		String salt = Common.genSalt();
+		System.out.println(salt);
+		System.out.println(Common.genPasswdHash("24681357", salt));
+		*/
+		
 		while(true)
 		{
 			User user = Auth.step1();
@@ -67,71 +83,36 @@ public class Main
 			}
 			
 			System.out.println("Etapa 3 validada com sucesso!");
-			break; // continuar
-		}
-		
-		testDecrypt();
+			//break; // continuar
+
+			while(true)
+			{
+				System.out.print("Entre com o caminho do arquivo: ");
+				String filepath;
+				try {
+					filepath = Common.readStdinLine();
+				} catch (IOException e) {
+					System.out.println("Erro ao abrir arquivo!");
+					continue;
+				}
+				if(filepath.equals("quit")) break;
+				saveFile(user, filepath);
+			}
+		}		
 	}
 	
-	public static void testDecrypt() throws NoSuchAlgorithmException, NoSuchPaddingException
+	public static void saveFile(User user, String filename) throws NoSuchAlgorithmException, NoSuchPaddingException
 	{
-		String privKeyPath = "../sample/userpriv";
-		String pubKeyPath = "../sample/userpub";
-		byte[] privKeyRaw, pubKeyRaw;
-		try 
-		{
-			privKeyRaw = FileHandler.readFile(privKeyPath);
-			pubKeyRaw = FileHandler.readFile(pubKeyPath);
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-			return;
-		}
-
-		/* ---------------------------------------------------------------------- */
-
-		PrivateKey privateKey;
-		PublicKey publicKey;
-		try 
-		{
-			privateKey = Security.loadPrivateKey(privKeyRaw, "segredo".getBytes("UTF8"));
-			publicKey = Security.loadPublicKey(pubKeyRaw);
-		} 
-		catch (InvalidKeyException | UnsupportedEncodingException e) 
-		{
-			System.out.println("ERROR: chave DES da private key invalida!");
-			return;
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException e) 
-		{
-			System.out.println("ERROR: arquivo(s) de chave RSA invalido(s)!");
-			return;
-		} 
-
-		/* ---------------------------------------------------------------------- */
 		
-		boolean keyPairCheck = false;
-		try 
-		{
-			keyPairCheck = Security.checkKeyPair(privateKey, publicKey);
-		} 
-		catch (InvalidKeyException | SignatureException e) 
-		{
-			System.out.println("ERROR: chave publica e privada nao sao validas!");
-			keyPairCheck = false;
-		} 
-		System.out.println("Key check: "+(keyPairCheck ? "True" : "False"));
-		
-		/* ---------------------------------------------------------------------- */
-		
-		byte[] indexPlain = FileHandler.readCryptedFile("../sample/XXXXYYYYZZZZ", privateKey, publicKey);
+		byte[] indexPlain = FileHandler.readCryptedFile(filename, user.getPrivateKey(), user.getPublicKey());
 		if(indexPlain == null)
 		{
-			System.out.println("Erro ao decriptar arquivo!");
+			//System.out.println("Erro ao decriptar arquivo!");
+			return;
 		}
 		else
 		{
+			/*
 			System.out.println("=========== BEGIN OF FILE ================");
 			try 
 			{
@@ -143,6 +124,30 @@ public class Main
 				System.out.println(Common.binToHex(indexPlain));
 			}
 			System.out.println("============ END OF FILE =================");
+			
+			return indexPlain;
+			*/
+			System.out.print("Entre com o nome do novo arquivo: ");
+			String newFilePath;
+			try {
+				newFilePath = Common.readStdinLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+			try {
+				File f = new File(newFilePath);
+				FileOutputStream out = new FileOutputStream(f);
+				if(!f.exists()) f.createNewFile();
+				
+				out.write(indexPlain);
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		}
 	}
 }
