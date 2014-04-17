@@ -22,6 +22,8 @@ import javax.crypto.NoSuchPaddingException;
 
 public class Security 
 {	
+	/* --------------------------------------------------------------------- */
+	
 	private static byte[] digest(byte[] bin, String algorithm) throws NoSuchAlgorithmException
 	{
 
@@ -42,6 +44,8 @@ public class Security
 	{
 		return digest(bin, "SHA1");
 	}
+	
+	/* --------------------------------------------------------------------- */
 	
 	private static byte[] symmetricProcess(int opmode, byte[] raw, byte[] passwd) 
 				throws 	NoSuchAlgorithmException, 
@@ -83,6 +87,8 @@ public class Security
 		return symmetricProcess(Cipher.DECRYPT_MODE, raw, passwd);
 	}
 	
+	/* --------------------------------------------------------------------- */
+	
 	public static PrivateKey loadPrivateKey(byte[] raw, byte[] passwd) 
 			throws 	InvalidKeyException, 
 					NoSuchAlgorithmException, 
@@ -109,6 +115,8 @@ public class Security
 		return keyFactory.generatePublic(keySpec);
 	}
 
+	/* --------------------------------------------------------------------- */
+	
 	public static boolean checkSignature(PublicKey pub, byte[] plain, byte[] sign) 
 			throws 	NoSuchAlgorithmException, 
 					InvalidKeyException, 
@@ -136,6 +144,8 @@ public class Security
 	    return checkSignature(pub, raw, sig.sign());
 	}
 	
+	/* --------------------------------------------------------------------- */
+	
 	public static byte[] asymmetricDecryption(byte[] raw, Key key) 
 			throws 	NoSuchAlgorithmException, 
 					NoSuchPaddingException, 
@@ -148,4 +158,6 @@ public class Security
 		
 		return cipher.doFinal(raw);
 	}
+
+	/* --------------------------------------------------------------------- */
 }

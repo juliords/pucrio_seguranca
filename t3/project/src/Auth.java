@@ -17,6 +17,8 @@ import javax.crypto.NoSuchPaddingException;
 
 public class Auth 
 {
+	/* --------------------------------------------------------------------- */
+	
 	public static void resetLoginTries(String login) throws ClassNotFoundException
 	{
 		try 
@@ -49,12 +51,14 @@ public class Auth
 		}
 	}
 	
+	/* --------------------------------------------------------------------- */
+	
 	public static User login(String login) throws ClassNotFoundException, NoSuchAlgorithmException, SQLException
 	{
 		User user = User.getUser(login);
 		if(user == null) return null;
 		
-		if(user.getLoginTries() >= 3 && Common.diffDate(new Date(), user.getLastLoginTry()) < 2)
+		if(user.getLoginTries() >= 3 && Common.diffDateMinutes(new Date(), user.getLastLoginTry()) < 2)
 		{
 			System.out.println("Número máximo de tentativas estourado. Por favor, aguarde 2 minutos!");
 			return null;
@@ -63,6 +67,8 @@ public class Auth
 		
 		return user;
 	}
+	
+	/* --------------------------------------------------------------------- */
 	
 	public static User step1() throws ClassNotFoundException, NoSuchAlgorithmException 
 	{
@@ -89,50 +95,53 @@ public class Auth
 	
 	public static boolean step2(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException
 	{
-		int passwdLen = 8;
-		Integer[][] keys = new Integer[passwdLen][];
-		Integer[] sel = new Integer[passwdLen];
-		for(int i = 0; i < passwdLen; i++)
-			keys[i] = Common.randPermut(10);
+		final int maxPasswdLen = 8;
+		Integer[][] keysChosen = new Integer[maxPasswdLen][];
 
-		for(int i = 0; i < passwdLen; i++)
+		for(int i = 0; i < maxPasswdLen; i++)
 		{
+			Integer[] keyboard = Common.randPermut(10);
 			System.out.print("Teclado: ");
 			for(int j = 0; j < 5; j++)
 			{
-				System.out.print(j+"->("+keys[i][2*j]+","+keys[i][(2*j)+1]+") / ");
+				System.out.print(j+"->("+keyboard[2*j]+","+keyboard[(2*j)+1]+") / ");
 			}
 			System.out.println("");
 			System.out.print("Escolha uma senha: ");
-			Integer key;
+			Integer button;
 			try {
-				key = Integer.parseInt(Common.readStdinLine());
+				button = Integer.parseInt(Common.readStdinLine());
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Entrada inválida, tente novamente!");
-				i--;
-				continue;
+				button = -1;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return false;
 			}
-			sel[i] = key;
+			
+			if(button < 0 || button > 4)
+			{
+				System.out.println("Entrada inválida, tente novamente!");
+				i--;
+				continue;				
+			}
+			
+			keysChosen[i] = new Integer[2];
+			keysChosen[i][0] = keyboard[2*button];
+			keysChosen[i][1] = keyboard[(2*button)+1];
 		}
 		
-		for(int i = 0; i < Math.pow(2, passwdLen); i++) // aaaaaaaall combinations
+		for(int i = 0; i < Math.pow(2, maxPasswdLen); i++)
 		{
-			Integer passwd = 0;
-			for(int j = 0; j < passwdLen; j++)
+			String passwd = "";
+			for(int j = 0; j < maxPasswdLen; j++)
 			{
-				int t = i & (1 << j);
-				passwd *= 10;
-				if(t > 0)
-					passwd += keys[j][sel[j]*2];
+				if((i & (1 << j)) > 0)
+					passwd += keysChosen[j][0];
 				else
-					passwd += keys[j][(sel[j]*2)+1];
+					passwd += keysChosen[j][1];
 			}
-			String hash = Common.genPasswdHash(passwd.toString(), user.getPasswdSalt());
+			String hash = Common.genPasswdHash(passwd, user.getPasswdSalt());
 			if(hash.equals(user.getPasswdHash())) return true;
 		}
 		
@@ -170,7 +179,7 @@ public class Auth
 		} 
 		catch (InvalidKeyException | UnsupportedEncodingException e) 
 		{
-			System.out.println("ERROR: chave DES da private key invalida!");
+			System.out.println("ERROR: chave DES da chave privada invalida!");
 			return false;
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException | InvalidKeySpecException e) 
@@ -191,3 +200,4 @@ public class Auth
 		} 
 	}
 }
+

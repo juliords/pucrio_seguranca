@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class Common 
 {
+	/* --------------------------------------------------------------------- */
+	
 	public static String binToHex(byte[] bin)
 	{
 		StringBuffer buf = new StringBuffer();
@@ -33,26 +35,13 @@ public class Common
 	    return data;
 	}
 	
+	/* --------------------------------------------------------------------- */
+	
 	public static Integer randi(Integer min, Integer max)
 	{
 		return Math.abs((new Random()).nextInt()) % (max-min+1) + min;
 	}
 	
-	public static String genSalt()
-	{
-		return String.format("%09d", randi(0, 999999999));
-	}
-	
-	public static String genPasswdHash(String plain, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
-	{
-		return Common.binToHex(Security.md5((plain+salt).getBytes("UTF8")));
-	}
-	
-	public static Double diffDate(Date date1, Date date2)
-	{
-		return ((date1.getTime()-date2.getTime())/(1000*60.0));
-	}
-
 	public static Integer[] randPermut(Integer len)
 	{
 		Integer[] v = new Integer[len];
@@ -73,9 +62,32 @@ public class Common
 		return v;
 	}
 	
+	/* --------------------------------------------------------------------- */
+	
+	public static String genSalt()
+	{
+		return String.format("%09d", randi(0, 999999999));
+	}
+	
+	public static String genPasswdHash(String plain, String salt) throws NoSuchAlgorithmException, UnsupportedEncodingException
+	{
+		return Common.binToHex(Security.md5((plain+salt).getBytes("UTF8")));
+	}
+	
+	/* --------------------------------------------------------------------- */
+	
+	public static Double diffDateMinutes(Date date1, Date date2)
+	{
+		return ((date1.getTime()-date2.getTime())/(1000*60.0));
+	}
+
+	/* --------------------------------------------------------------------- */
+	
 	public static String readStdinLine() throws IOException
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		return br.readLine();
 	}
+
+	/* --------------------------------------------------------------------- */	
 }

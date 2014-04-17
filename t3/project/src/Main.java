@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -21,7 +19,6 @@ public class Main
 		byte[] pubRaw;
 		try {
 			pubRaw = FileHandler.readFile(pubPath);
-			Security.loadPublicKey(pubRaw);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -42,7 +39,7 @@ public class Main
 			User user = Auth.step1();
 			if(user == null)
 			{
-				System.out.println("Erro na autenticacao (etapa 1)");
+				System.out.println("Usuario invalido, tente novamente!");
 				continue;
 			}
 			System.out.println(user.getName());
@@ -83,7 +80,6 @@ public class Main
 			}
 			
 			System.out.println("Etapa 3 validada com sucesso!");
-			//break; // continuar
 
 			while(true)
 			{
@@ -95,9 +91,10 @@ public class Main
 					System.out.println("Erro ao abrir arquivo!");
 					continue;
 				}
-				if(filepath.equals("quit")) break;
+				if(filepath.equals("none")) break;
 				saveFile(user, filepath);
 			}
+			break;
 		}		
 	}
 	
@@ -112,38 +109,17 @@ public class Main
 		}
 		else
 		{
-			/*
-			System.out.println("=========== BEGIN OF FILE ================");
-			try 
-			{
-				System.out.println(new String(indexPlain, "UTF8"));
-			} 
-			catch (UnsupportedEncodingException e) 
-			{
-				System.out.println("NOTICE: arquivo a ser impresso nao eh UTF8!");
-				System.out.println(Common.binToHex(indexPlain));
-			}
-			System.out.println("============ END OF FILE =================");
-			
-			return indexPlain;
-			*/
 			System.out.print("Entre com o nome do novo arquivo: ");
-			String newFilePath;
+			String filePath;
 			try {
-				newFilePath = Common.readStdinLine();
+				filePath = Common.readStdinLine();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
 			}
 			try {
-				File f = new File(newFilePath);
-				FileOutputStream out = new FileOutputStream(f);
-				if(!f.exists()) f.createNewFile();
-				
-				out.write(indexPlain);
-				out.flush();
-				out.close();
+				FileHandler.writeFile(filePath, indexPlain);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

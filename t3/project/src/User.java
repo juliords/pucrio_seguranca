@@ -25,7 +25,9 @@ public class User
 	{
 		// nao instanciavel
 	}
-	
+
+	/* --------------------------------------------------------------------- */
+
 	public static User getUser(String login) 
 			throws ClassNotFoundException, SQLException, NoSuchAlgorithmException
 	{
@@ -57,11 +59,13 @@ public class User
 				user.publicKey = Security.loadPublicKey(Common.hexToBin(rs.getString("chave_publica")));
 			} catch (InvalidKeySpecException e) {
 				e.printStackTrace();
-				return null; // never gonna happen
+				return null;
 			}
 		}
 		return user;
 	}
+
+	/* --------------------------------------------------------------------- */
 
 	public Integer getGroup() {
 		return group;

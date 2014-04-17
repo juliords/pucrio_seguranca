@@ -1,6 +1,7 @@
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +32,19 @@ public class FileHandler
         return keyBytes;
 	}
 	
+	public static void writeFile(String filename, byte[] data) throws IOException
+	{
+		File f = new File(filename);
+		FileOutputStream out = new FileOutputStream(f);
+		if(!f.exists()) f.createNewFile();
+		
+		out.write(data);
+		out.flush();
+		out.close();
+	}
+	
+	/* --------------------------------------------------------------------- */
+	
 	public static byte[] readCryptedFile(String filename, PrivateKey priv, PublicKey pub)
 			throws NoSuchAlgorithmException, NoSuchPaddingException
 	{
@@ -48,8 +62,6 @@ public class FileHandler
 			return null; // Erro na leitura do arquivos arquivos
 		}
 
-		/* ---------------------------------------------------------------------- */
-
 		byte[] fileKeyPlain;
 		try 
 		{
@@ -66,8 +78,6 @@ public class FileHandler
 			return null;
 		}
 
-		/* ---------------------------------------------------------------------- */
-		
 		byte[] filePlain;
 		try 
 		{
@@ -84,8 +94,6 @@ public class FileHandler
 			return null;
 		}
 
-		/* ---------------------------------------------------------------------- */
-		
 		boolean fileSignCheck = false;
 		try 
 		{
